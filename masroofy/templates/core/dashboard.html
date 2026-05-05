@@ -1,0 +1,80 @@
+{% extends 'core/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>📊 Dashboard</h1>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="value" style="color:#43a047">{{ total_income|floatformat:2 }} EGP</div>
+    <div class="label">Total Income</div>
+  </div>
+  <div class="stat-card">
+    <div class="value" style="color:#e53935">{{ total_expenses|floatformat:2 }} EGP</div>
+    <div class="label">Total Expenses</div>
+  </div>
+  <div class="stat-card">
+    <div class="value" style="color:{% if remaining_budget >= 0 %}#1a73e8{% else %}#e53935{% endif %}">
+      {{ remaining_budget|floatformat:2 }} EGP
+    </div>
+    <div class="label">Remaining Balance</div>
+  </div>
+</div>
+
+{% if budget_status %}
+<div class="card">
+  <h2>📁 Budget Status by Category</h2>
+  {% for b in budget_status %}
+  <div style="margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between">
+      <strong>{{ b.category }}</strong>
+      <span style="color:{% if b.exceeded %}#e53935{% else %}#43a047{% endif %}">
+        {{ b.remaining|floatformat:2 }} / {{ b.limit|floatformat:2 }} EGP
+        {% if b.exceeded %}⚠️ EXCEEDED{% endif %}
+      </span>
+    </div>
+    <div class="budget-bar">
+      {% if b.limit > 0 %}
+      {% with pct=b.remaining|floatformat:0 %}
+      <div class="budget-fill {% if b.exceeded %}exceeded{% endif %}"
+           style="width:{% if b.exceeded %}100{% else %}{{ b.remaining|floatformat:0 }}{% endif %}%"></div>
+      {% endwith %}
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <h2 style="margin:0">📋 Recent Transactions</h2>
+    <a href="/history/" class="btn btn-secondary">View All</a>
+  </div>
+  {% if transactions %}
+  <table>
+    <thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Description</th><th>Amount</th></tr></thead>
+    <tbody>
+    {% for t in transactions|slice:":5" %}
+    <tr>
+      <td>{{ t.timestamp }}</td>
+      <td><span class="badge badge-{{ t.type }}">{{ t.get_type_display }}</span></td>
+      <td>{{ t.category }}</td>
+      <td>{{ t.description|default:"—" }}</td>
+      <td style="font-weight:600;color:{% if t.type == 'income' %}#43a047{% else %}#e53935{% endif %}">
+        {% if t.type == 'expense' %}-{% endif %}{{ t.amount }} EGP
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p style="color:#999;text-align:center;padding:20px">No transactions yet. Add your first one!</p>
+  {% endif %}
+</div>
+
+<div style="display:flex;gap:12px;margin-top:8px">
+  <a href="/expense/add/" class="btn btn-danger">➕ Add Expense</a>
+  <a href="/income/add/" class="btn btn-success">➕ Add Income</a>
+  <a href="/budget/set/" class="btn btn-primary">🎯 Set Budget</a>
+</div>
+{% endblock %}

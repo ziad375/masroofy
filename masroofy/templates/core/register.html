@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div style="max-width:440px;margin:40px auto">
+  <div class="card">
+    <h1>📝 Create Account</h1>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group">
+        <label>{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<p style="color:red;font-size:.85rem">{{ field.errors.0 }}</p>{% endif %}
+      </div>
+      {% endfor %}
+      {% if form.non_field_errors %}
+      <p style="color:red">{{ form.non_field_errors.0 }}</p>
+      {% endif %}
+      <button class="btn btn-primary" style="width:100%;margin-top:8px">Register</button>
+    </form>
+    <p style="margin-top:16px;text-align:center">Already have an account? <a href="/login/">Login</a></p>
+  </div>
+</div>
+{% endblock %}

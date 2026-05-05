@@ -1,0 +1,20 @@
+{% extends 'core/base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div style="max-width:420px;margin:60px auto">
+  <div class="card">
+    <h1>🔐 Login</h1>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group">
+        <label>{{ field.label }}</label>
+        {{ field }}
+      </div>
+      {% endfor %}
+      <button class="btn btn-primary" style="width:100%;margin-top:8px">Login</button>
+    </form>
+    <p style="margin-top:16px;text-align:center">No account? <a href="/register/">Register</a></p>
+  </div>
+</div>
+{% endblock %}

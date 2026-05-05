@@ -1,0 +1,42 @@
+{% extends 'core/base.html' %}
+{% block title %}Transaction History{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+  <h1>📜 Transaction History</h1>
+  <div>
+    <a href="/expense/add/" class="btn btn-danger">+ Expense</a>
+    <a href="/income/add/" class="btn btn-success" style="margin-left:8px">+ Income</a>
+  </div>
+</div>
+<div class="card">
+  {% if transactions %}
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Type</th><th>Category</th><th>Description</th><th>Amount</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+    {% for t in transactions %}
+    <tr>
+      <td>{{ t.timestamp }}</td>
+      <td><span class="badge badge-{{ t.type }}">{{ t.get_type_display }}</span></td>
+      <td>{{ t.category }}</td>
+      <td>{{ t.description|default:"—" }}</td>
+      <td style="font-weight:600;color:{% if t.type == 'income' %}#43a047{% else %}#e53935{% endif %}">
+        {% if t.type == 'expense' %}-{% endif %}{{ t.amount }} EGP
+      </td>
+      <td>
+        <form method="post" action="/transaction/{{ t.id }}/delete/" style="display:inline"
+              onsubmit="return confirm('Delete this transaction?')">
+          {% csrf_token %}
+          <button class="btn btn-danger" style="padding:6px 14px;font-size:.85rem">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p style="text-align:center;color:#999;padding:30px">No transactions yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

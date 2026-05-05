@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+{% block title %}Add {{ transaction_type }}{% endblock %}
+{% block content %}
+<div style="max-width:500px;margin:0 auto">
+  <div class="card">
+    <h1>{% if transaction_type == 'Expense' %}💸{% else %}💵{% endif %} Add {{ transaction_type }}</h1>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group">
+        <label>{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<p style="color:red;font-size:.85rem">{{ field.errors.0 }}</p>{% endif %}
+      </div>
+      {% endfor %}
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button class="btn {% if transaction_type == 'Expense' %}btn-danger{% else %}btn-success{% endif %}" style="flex:1">
+          Save {{ transaction_type }}
+        </button>
+        <a href="/" class="btn btn-secondary" style="flex:1;text-align:center">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
