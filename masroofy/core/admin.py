@@ -18,3 +18,4 @@ class TransactionAdmin(admin.ModelAdmin):
 @admin.register(Budget)
 class BudgetAdmin(admin.ModelAdmin):
     list_display = ('user', 'category', 'total_amount', 'start_date', 'end_date')
+    
